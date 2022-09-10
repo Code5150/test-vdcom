@@ -58,7 +58,7 @@
                     <artifactId>exec-maven-plugin</artifactId>
                     <version>3.1.0</version>
                     <configuration>
-                        <mainClass>com.code5150.App</mainClass>
+                        <mainClass>com.code5150.Main</mainClass>
                     </configuration>
                 </plugin>
             </plugins>
