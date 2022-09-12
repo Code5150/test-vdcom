@@ -62,7 +62,6 @@ public class Graph {
             var nodePrev = pathNodes.get(i - 1);
             var node = pathNodes.get(i);
             result *= nodePrev.getWeight(node.getId());
-            //result *= node.getWeight(nodePrev.getId()) / nodePrev.getWeight(node.getId());
         }
         return result;
     }

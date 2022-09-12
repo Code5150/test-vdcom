@@ -1,28 +1,12 @@
 package com.code5150;
 
-import java.util.Scanner;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-/**
- * Hello world!
- *
- */
-public class App 
-{
-    public static void main( String[] args )
-    {
-        var sc = new Scanner(System.in);
-        int n = sc.nextInt();
-        naiveStreamFooBar(n);
-        System.out.println("=============================");
-        //patternFooBar(n);
-        multithreadedFooBar(n);
-    }
-
-    protected static void naiveFooBar(int n) {
+public class Foobar {
+    public void naiveFooBar(int n) {
         for (int i = 1; i <= n; i++) {
             boolean three = i % 3 == 0;
             boolean five = i % 5 == 0;
@@ -39,7 +23,7 @@ public class App
         }
     }
 
-    protected static void naiveStreamFooBar(int n) {
+    public void naiveStreamFooBar(int n) {
         System.out.println(IntStream.range(1, n).mapToObj(i ->
                 (i % 3 == 0 ? "Foo" : "") +
                         (i % 5 == 0 ? "Bar" : "") +
@@ -47,16 +31,16 @@ public class App
         ).collect(Collectors.joining()));
     }
 
-    protected static void patternFooBar(int n) {
+    public void patternFooBar(int n) {
         System.out.println(patternFooBar(1, n));
     }
 
-    protected static String patternFooBar(int from, int to) {
+    protected String patternFooBar(int from, int to) {
         var sb = new StringBuilder();
         int left = to % 15;
         for (int i = from; i < (to - left); i += 15) {
             sb.append(i).append("\n")
-              .append(i + 1).append("\n")
+                    .append(i + 1).append("\n")
                     .append("Foo").append("\n")
                     .append(i+3).append("\n")
                     .append("Bar").append("\n")
@@ -90,7 +74,7 @@ public class App
         return sb.toString();
     }
 
-    protected static void multithreadedFooBar(int n) {
+    public void multithreadedFooBar(int n) {
         int threadsNum = 6;
 
         var countsPerThread = countsByThreads(n, threadsNum);
@@ -107,7 +91,7 @@ public class App
         executorService.shutdownNow();
     }
 
-    protected static int[] countsByThreads(int n, int threadsNum) {
+    protected int[] countsByThreads(int n, int threadsNum) {
         int[] countsPerThread = new int[threadsNum];
         int countPerThread = n / threadsNum;
         int left = n % threadsNum;
