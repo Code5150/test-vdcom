@@ -1,18 +1,29 @@
 package com.code5150;
 
 import com.code5150.graph.Graph;
+import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.Arrays;
 import java.util.regex.Pattern;
 
-public class Main {
-    public static void main(String[] args) {
+import static org.junit.Assert.assertEquals;
+
+public class AppTest {
+    @Test
+    public void testGraph1() {
         var graph = new Graph();
-        var sc = new Scanner(System.in);
+        var proportions = Arrays.asList(
+                "1024 byte = 1 kilobyte",
+                "2 bar = 12 ring",
+                "16.8 ring = 2 pyramid",
+                "4 hare = 1 cat",
+                "5 cat = 0.5 giraffe",
+                "1 byte = 8 bit",
+                "15 ring = 2.5 bar");
+
         var pattern = Pattern.compile("(\\d+(\\.?\\d+)?)\\s+(.+)\\s+\\=+\\s+(\\d+(\\.?\\d+)?)\\s+(.+)");
-        while (true) {
-            var input = sc.nextLine();
+        for (var input: proportions) {
             if (!input.isBlank()) {
                 var data = pattern.matcher(input.trim());
                 if (data.matches()) {
@@ -25,17 +36,19 @@ public class Main {
                     var endNodeWeight = Double.parseDouble(data.group(4));
                     graph.addEdge(startNodeId, startNodeWeight, endNodeId, endNodeWeight);
                 } else {
-                    System.out.println("Failed to read data. Please, try again: ");
-                    sc.nextLine();
+                    System.err.println("Failed to read data.");
                 }
-            } else {
-                break;
             }
         }
+
+        var targets = Arrays.asList("1 pyramid = ? bar",
+                "1 giraffe = ? hare",
+                "0.5 byte = ? cat",
+                "2 kilobyte = ? bit");
+
         pattern = Pattern.compile("(\\d+(\\.?\\d+)?)\\s+(.+)\\s+\\=+\\s+\\??\\s+(.+)");
         var result = new ArrayList<String>();
-        while (true) {
-            var input = sc.nextLine();
+        for (var input: targets) {
             if (!input.isBlank()) {
                 var data = pattern.matcher(input.trim());
                 if (data.matches()) {
@@ -51,21 +64,26 @@ public class Main {
                     }
                     var resultCountStr = resultCount != null
                             ? (resultCount % 1 == 0
-                                    ? String.valueOf(resultCount.intValue())
-                                    : String.valueOf(resultCount)) + " " + endNodeId
+                            ? String.valueOf(resultCount.intValue())
+                            : String.valueOf(resultCount)) + " " + endNodeId
                             : "Conversion not possible.";
 
                     result.add(resultCount != null
                             ? countStr + " " + startNodeId + " = " + resultCountStr
                             : resultCountStr);
                 } else {
-                    System.out.println("Failed to read data. Please, try again: ");
-                    sc.nextLine();
+                    System.err.println("Failed to read data.");
                 }
-            } else {
-                break;
             }
         }
-        result.forEach(System.out::println);
+
+        var targetResult = Arrays.asList("1 pyramid = 1.4 bar",
+                "1 giraffe = 40 hare",
+                "Conversion not possible.",
+                "2 kilobyte = 16384 bit");
+
+        for (int i = 0; i < targets.size(); i++) {
+            assertEquals(targetResult.get(i), result.get(i));
+        }
     }
 }
