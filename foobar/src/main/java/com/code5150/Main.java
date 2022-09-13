@@ -13,10 +13,10 @@ public class Main
         var sc = new Scanner(System.in);
         int n = sc.nextInt();
         var foobar = new Foobar();
-        foobar.naiveStreamFooBar(n);
+        System.out.println(foobar.naiveStreamFooBar(n));
         System.out.println("=============================");
-        foobar.patternFooBar(n);
+        System.out.println(foobar.patternFooBar(n));
         System.out.println("=============================");
-        foobar.multithreadedFooBar(n);
+        System.out.println(foobar.multithreadedFooBar(n));
     }
 }

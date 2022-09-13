@@ -1,38 +1,42 @@
 package com.code5150;
 
+import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class Foobar {
-    public void naiveFooBar(int n) {
+    public String naiveFooBar(int n) {
+        var sb = new StringBuilder();
         for (int i = 1; i <= n; i++) {
             boolean three = i % 3 == 0;
             boolean five = i % 5 == 0;
             if (three) {
-                System.out.print("Foo");
+                sb.append("Foo");
             }
             if (five) {
-                System.out.print("Bar");
+                sb.append("Bar");
             }
             if (!(three || five)) {
-                System.out.print(i);
+                sb.append(i);
             }
-            System.out.println();
+            sb.append("\n");
         }
+        return sb.toString();
     }
 
-    public void naiveStreamFooBar(int n) {
-        System.out.println(IntStream.range(1, n).mapToObj(i ->
+    public String naiveStreamFooBar(int n) {
+        return IntStream.range(1, n+1).mapToObj(i ->
                 (i % 3 == 0 ? "Foo" : "") +
                         (i % 5 == 0 ? "Bar" : "") +
                         (i % 3 != 0 && i % 5 != 0 ? i : "") + "\n"
-        ).collect(Collectors.joining()));
+        ).collect(Collectors.joining());
     }
 
-    public void patternFooBar(int n) {
-        System.out.println(patternFooBar(1, n));
+    public String patternFooBar(int n) {
+        return patternFooBar(1, n);
     }
 
     protected String patternFooBar(int from, int to) {
@@ -74,33 +78,33 @@ public class Foobar {
         return sb.toString();
     }
 
-    public void multithreadedFooBar(int n) {
+    public String multithreadedFooBar(int n) {
         int threadsNum = 6;
 
+        int left = n % 15;
         var countsPerThread = countsByThreads(n, threadsNum);
 
         var executorService = Executors.newFixedThreadPool(threadsNum);
-        var result = IntStream.range(0, threadsNum).mapToObj(i ->
+        var result = Stream.concat(IntStream.range(0, threadsNum).mapToObj(i ->
                 CompletableFuture.supplyAsync(() -> {
                     int from = i > 0 ? countsPerThread[i-1] + 1 : 1;
                     int to = countsPerThread[i];
                     return patternFooBar(from, to);
                 }, executorService)
-        ).map(CompletableFuture::join).collect(Collectors.joining(""));
-        System.out.println(result);
+        ).map(CompletableFuture::join), Stream.of(patternFooBar(n - left + 1, n))).collect(Collectors.joining());
         executorService.shutdownNow();
+        return result;
     }
 
     protected int[] countsByThreads(int n, int threadsNum) {
         int[] countsPerThread = new int[threadsNum];
-        int countPerThread = n / threadsNum;
-        int left = n % threadsNum;
-        for (int i = 0; i < threadsNum; i++) {
-            countsPerThread[i] = countPerThread + (i > 0 ? countsPerThread[i-1] : 0);
-            if (left > 0) {
-                countsPerThread[i] += 1;
-                left -= 1;
-            }
+        Arrays.fill(countsPerThread, 0);
+        int numberOfPortions = n / 15;
+        for (int i = 0; i < numberOfPortions; i++) {
+            countsPerThread[i % threadsNum] += 15;
+        }
+        for (int i = 1; i < threadsNum; i++) {
+            countsPerThread[i] += countsPerThread[i-1];
         }
         return countsPerThread;
     }
