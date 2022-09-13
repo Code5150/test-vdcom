@@ -23,19 +23,14 @@ public class FileWriterRunnable implements Runnable{
                     mutex.lock();
                     file.seek(0);
                     a = file.readInt();
-                    System.out.print("Old: " + a);
                     a++;
                     file.seek(0);
                     file.writeInt(a);
-                    System.out.print(" , new: " + a);
-                    System.out.println(" , thread: " + Thread.currentThread().getName());
                 } finally {
                     mutex.unlock();
-                    //Sleep illustrates parallel thread work
-                    Thread.sleep(1L);
                 }
             }
-        } catch (IOException | InterruptedException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
