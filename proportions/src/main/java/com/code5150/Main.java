@@ -27,6 +27,7 @@ public class Main {
                     graph.addEdge(startNodeId, startNodeWeight, endNodeId, endNodeWeight);
                 } else {
                     System.out.println("Failed to read data. Please, try again: ");
+                    sc.nextLine();
                 }
             } else {
                 break;
@@ -58,6 +59,7 @@ public class Main {
                     result.add(countStr + " " + startNodeId + " = " + resultCountStr);
                 } else {
                     System.out.println("Failed to read data. Please, try again: ");
+                    sc.nextLine();
                 }
             } else {
                 break;
